@@ -16,7 +16,6 @@ Atliq Hardwares is a leading computer hardware producer based in India, with a g
 ## How to Navigate
 
 - Explore the [SQL Queries](sql_queries.txt) file for ad-hoc request solutions.
-- Review the [Data Analysis](data_analysis.ipynb) in the Jupyter Notebook.
 - View screenshots of visualizations in the [Visualizations](visualizations) folder.
 - Watch the [Video Presentation](video_presentation.mp4) for a detailed walkthrough.
 
