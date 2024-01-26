@@ -50,11 +50,19 @@ LIMIT 1;
 SELECT 
     'Highest' AS cost_type,
     fmc_high.product_code,
+    fmc_high.product,
     fmc_high.manufacturing_cost AS highest_manufacturing_cost
 FROM 
-    (SELECT product_code, manufacturing_cost
-     FROM `gdb023`.`fact_manufacturing_cost`
-     ORDER BY manufacturing_cost DESC
+    (SELECT 
+         fmc.product_code, 
+         dp.product,
+         fmc.manufacturing_cost
+     FROM 
+         `gdb023`.`fact_manufacturing_cost` fmc
+     JOIN 
+         `gdb023`.`dim_product` dp ON fmc.product_code = dp.product_code
+     ORDER BY 
+         fmc.manufacturing_cost DESC
      LIMIT 1) AS fmc_high
 
 UNION ALL
@@ -62,12 +70,21 @@ UNION ALL
 SELECT 
     'Lowest' AS cost_type,
     fmc_low.product_code,
+    fmc_low.product,
     fmc_low.manufacturing_cost AS lowest_manufacturing_cost
 FROM 
-    (SELECT product_code, manufacturing_cost
-     FROM `gdb023`.`fact_manufacturing_cost`
-     ORDER BY manufacturing_cost ASC
+    (SELECT 
+         fmc.product_code, 
+         dp.product,
+         fmc.manufacturing_cost
+     FROM 
+         `gdb023`.`fact_manufacturing_cost` fmc
+     JOIN 
+         `gdb023`.`dim_product` dp ON fmc.product_code = dp.product_code
+     ORDER BY 
+         fmc.manufacturing_cost ASC
      LIMIT 1) AS fmc_low;
+
 ```
 ## Ad-Hoc Request 6: Generate a report which contains the top 5 customers who received an average high pre_invoice_discount_pct for the fiscal year 2021 and in the Indian market. The final output contains these fields
 
