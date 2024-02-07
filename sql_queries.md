@@ -10,13 +10,32 @@ WHERE customer = 'Atliq Exclusive' AND region = 'APAC';
 ## Ad-Hoc Request 2: What is the percentage of unique product increase in 2021 vs. 2020?
 
 ```sql
-SELECT
-    COUNT(DISTINCT CASE WHEN fiscal_year = 2020 THEN product_code END) AS unique_products_2020,
-    COUNT(DISTINCT CASE WHEN fiscal_year = 2021 THEN product_code END) AS unique_products_2021,
-    ((COUNT(DISTINCT CASE WHEN fiscal_year = 2021 THEN product_code END) - COUNT(DISTINCT CASE WHEN fiscal_year = 2020 THEN product_code END)) 
-    / COUNT(DISTINCT CASE WHEN fiscal_year = 2020 THEN product_code END)) * 100 AS percentage_chg
-FROM
-    fact_sales_monthly;
+WITH tot_products AS (
+  SELECT 
+    Count(DISTINCT product_code) AS total_products, 
+    fiscal_year AS year 
+  FROM 
+    fact_sales_monthly 
+  GROUP BY 
+    fiscal_year
+) 
+SELECT 
+  a.total_products AS unique_products_2020, 
+  b.total_products AS unique_products_2021, 
+  (b.total_products - a.total_products)
+ AS new_products_introduced, 
+round (
+    (
+      b.total_products - a.total_products
+    ) / a.total_products * 100, 
+    2
+  ) AS pct_change 
+  FROM 
+    tot_products AS a 
+    LEFT JOIN tot_products AS b ON a.year + 1 = b.year 
+  limit 
+    1 ;
+
 ```
 ## Ad-Hoc Request 3: Provide a report with all the unique product counts for each segment and sort them in descending order of product counts.
 
@@ -29,20 +48,33 @@ ORDER BY product_count DESC;
 ## Ad-Hoc Request 4: Which segment had the most increase in unique products in 2021 vs 2020?
 
 ```sql
+WITH temp_table AS (
+    SELECT 
+        p.segment,
+        s.fiscal_year,
+        COUNT(DISTINCT s.Product_code) as product_count
+    FROM 
+        fact_sales_monthly s
+        JOIN dim_product p ON s.product_code = p.product_code
+    GROUP BY 
+        p.segment,
+        s.fiscal_year
+)
 SELECT 
-    d.segment,
-    COUNT(DISTINCT fm.product_code) AS product_count_2020,
-    (SELECT COUNT(DISTINCT fm.product_code) 
-    FROM `gdb023`.`fact_sales_monthly` fm 
-    WHERE fm.fiscal_year = 2021) AS product_count_2021,
-    COUNT(DISTINCT fm.product_code) - (SELECT COUNT(DISTINCT fm.product_code) 
-    FROM `gdb023`.`fact_sales_monthly` fm 
-    WHERE fm.fiscal_year = 2020) AS difference
-FROM `gdb023`.`dim_product` d
-JOIN `gdb023`.`fact_sales_monthly` fm ON d.product_code = fm.product_code
-GROUP BY d.segment
-ORDER BY difference DESC
-LIMIT 1;
+    up_2020.segment,
+    up_2020.product_count as product_count_2020,
+    up_2021.product_count as product_count_2021,
+    up_2021.product_count - up_2020.product_count as difference
+FROM 
+    temp_table as up_2020
+JOIN 
+    temp_table as up_2021
+ON 
+    up_2020.segment = up_2021.segment
+    AND up_2020.fiscal_year = 2020 
+    AND up_2021.fiscal_year = 2021
+ORDER BY 
+    difference DESC;
 ```
 ## Ad-Hoc Request 5: Get the products that have the highest and lowest manufacturing costs.
 ```sql
@@ -108,32 +140,38 @@ LIMIT 5;
 ## Ad-Hoc Request 7: Get the complete report of the Gross sales amount for the customer “Atliq Exclusive” for each month. This analysis helps to get an idea of low and high-performing months and take strategic decisions.
 
 ```sql
-SELECT
-    MONTH(fm.date) AS Month,
-    YEAR(fm.date) AS Year,
-    SUM(fm.sold_quantity * fp.gross_price) AS Gross_sales_Amount
-FROM
-    `gdb023`.`fact_sales_monthly` fm
-JOIN
-    `gdb023`.`fact_gross_price` fp ON fm.product_code = fp.product_code
-JOIN
-    `gdb023`.`dim_customer` dc ON fm.customer_code = dc.customer_code
-WHERE
-    dc.customer = 'Atliq Exclusive'
-GROUP BY
-    MONTH(fm.date), YEAR(fm.date);
+SELECT YEAR(date) AS YEAR,
+       MONTH(date) AS MONTH,
+       sum(sold_quantity * gross_price) AS gross_sales_amount
+FROM fact_sales_monthly AS fs
+INNER JOIN fact_gross_price AS fp ON fs.product_code = fp.product_code
+AND fs.fiscal_year = fp.fiscal_year
+INNER JOIN dim_customer AS dc ON fs.customer_code = dc.customer_code
+WHERE customer = "Atliq Exclusive"
+GROUP BY MONTH,
+         YEAR(date)
+ORDER BY YEAR,
+         MONTH ;
 ```
 ## Ad-Hoc Request 8: In which quarter of 2020, got the maximum total_sold_quantity?
 
 ```sql
-SELECT 
-    QUARTER(date) AS Quarter,
-    SUM(sold_quantity) AS total_sold_quantity
-FROM fact_sales_monthly
-WHERE YEAR(date) = 2020
-GROUP BY Quarter
-ORDER BY total_sold_quantity DESC
-LIMIT 1;
+WITH temp_table AS
+  (SELECT date,month(date_add(date,interval 4 MONTH)) AS period,
+               fiscal_year,
+               sold_quantity
+   FROM fact_sales_monthly)
+SELECT CASE
+           WHEN period/3 <= 1 THEN "Q1"
+           WHEN period/3 <= 2
+                AND period/3 > 1 THEN "Q2"
+           WHEN period/3 <=3
+                AND period/3 > 2 THEN "Q3"
+           WHEN period/3 <=4
+                AND period/3 > 3 THEN "Q4"
+       END QUARTER,
+           round(sum(sold_quantity)/1000000, 2) AS total_sold_quanity
+FROM temp_table
 ```
 ## Ad-Hoc Request 9: Which channel helped to bring more gross sales in the fiscal year 2021 and the percentage of contribution?
 
