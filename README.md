@@ -23,7 +23,7 @@ Atliq Hardware is a leading computer hardware producer based in India, with a gl
 
 ## Live Dashboard
 
-Check out the [live dashboard](link-to-dashboard) to interact with the visualizations and explore the insights.
+Check out the [live dashboard](<iframe title="atliq-hardware report" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiNDJjZTQ1OGItNTc1OS00MTQ2LWI3OWEtZjUwMDZkNTk2MTM4IiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9" frameborder="0" allowFullScreen="true"></iframe>) to interact with the visualizations and explore the insights.
 
 ## Project Contributors
 
