@@ -18,7 +18,7 @@ Atliq Hardware is a leading computer hardware producer based in India, with a gl
 - Explore the [SQL Queries](sql_queries.md) file for ad-hoc request solutions.
 - [Link to Ad-Hoc Query CSV Exports Folder](sql_query_exports/)
 - [Database Script](https://raw.githubusercontent.com/ahme-png/atliq-hardwares-analytics/main/database_script.mysql)
-- Access the [Powerpoint presentation](atliq-hardware presentation.pptx)
+- Access the [Powerpoint presentation](altiq-hardware-powerpoint-presentation.pptx)
 - Watch the [Video Presentation](video_presentation.mp4) for a detailed walkthrough.
 
 ## Live Dashboard
