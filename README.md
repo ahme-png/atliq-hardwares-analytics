@@ -4,7 +4,7 @@ Welcome to my resume Data Analytics Project repository! This project aims to pro
 
 ## Project Overview
 
-Atliq Hardware is a leading computer hardware producer based in India, with a global presence. The management has identified the need for quick and smart data-informed decisions, leading to the expansion of the data analytics team.
+Atliq Hardwares (imaginary company) is a leading computer hardware producer in India with a global presence. The management has identified the need for quick and smart data-informed decisions, leading to the expansion of the data analytics team.
 
 ## Key Components
 
