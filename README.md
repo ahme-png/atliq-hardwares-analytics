@@ -19,7 +19,7 @@ Atliq Hardware is a leading computer hardware producer based in India, with a gl
 - Link to the [Ad-Hoc Query CSV Exports Folder](sql_query_exports/)
 - [Database Script](https://raw.githubusercontent.com/ahme-png/atliq-hardwares-analytics/main/database_script.mysql)
 - Access the [Powerpoint presentation](altiq-hardware-powerpoint-presentation.pptx)
-- PBIX file for access to [PowerBI report](atliq_hardware _report.pbix)
+- PBIX file for access to [PowerBI report](atliq_hardware_report.pbix)
 ## Live Dashboard
 
 Check out the [live dashboard](https://app.powerbi.com/view?r=eyJrIjoiNDJjZTQ1OGItNTc1OS00MTQ2LWI3OWEtZjUwMDZkNTk2MTM4IiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9) to interact with the visualizations and explore the insights.
